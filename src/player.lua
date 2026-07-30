@@ -1,37 +1,36 @@
 local player = {}
 
-local Player = {}
+player.__index = player
 
-function Player:update(dt, ball)
-	if self.ai then
-		self.y = ball - 100
-	end
-	if love.keyboard.isDown(self.up) and self.y > 20 then
+function player.new(x, y)
+	local self = {}
+
+	self.x = x or 20
+	self.y = y or 250
+	self.height = 100
+	self.width = 20
+	self.speed = 200
+	self.up = "w"
+	self.down = "s"
+
+	setmetatable(self, player)
+
+	return self
+end
+
+function player:update(dt, up, down)
+	self.up = up or self.up
+	self.down = down or self.down
+
+	if love.keyboard.isDown(self.up) then
 		self.y = self.y - self.speed * dt
-	end
-	if love.keyboard.isDown(self.down) and self.y < 380 then
+	elseif love.keyboard.isDown(self.down) then
 		self.y = self.y + self.speed * dt
 	end
 end
 
-function Player:draw()
-	love.graphics.rectangle("fill", self.x, self.y, 20, 200)
-end
-
-function player.new(ai, x, y, up, down)
-	local self = {}
-
-	setmetatable(self, { __index = Player })
-
-	self.x = x or 20
-	self.y = y or 200
-	self.up = up or "w"
-	self.down = down or "s"
-	self.ai = ai or false
-
-	self.speed = 200
-
-	return self
+function player:draw()
+	love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 end
 
 return player

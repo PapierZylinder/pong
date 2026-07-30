@@ -1,34 +1,33 @@
 local score = {}
 
-local Score = {}
+score.__index = score
 
-function Score:update(x, fun)
-	if x <= 20 then
-		self.pointL = self.pointL + 1
-		fun:reset()
-	end
-
-	if x >= 780 then
-		self.pointR = self.pointR + 1
-		fun:reset()
-	end
-end
-
-function Score:draw()
-	love.graphics.print(self.pointL, 300, 20, 0, 2, 2)
-	love.graphics.print(self.pointR, 500, 20, 0, 2, 2)
-end
-
-function score.new(player)
+function score.new()
 	local self = {}
 
-	setmetatable(self, { __index = Score })
+	self.x = 0
+	self.y = 0
+	self.pointsL = 0
+	self.pointsR = 0
 
-	self.pointL = 0
-	self.pointR = 0
-	self.player = player or 1
+	setmetatable(self, score)
 
 	return self
+end
+
+function score:update(ball)
+	if ball.x <= 0 then
+		self.pointsL = self.pointsL + 1
+		ball:reset()
+	elseif ball.x >= love.graphics.getWidth() then
+		self.pointsR = self.pointsR + 1
+		ball:reset()
+	end
+end
+
+function score:draw()
+	love.graphics.print(self.pointsL, love.graphics.getWidth() / 2 - 50, 20)
+	love.graphics.print(self.pointsR, love.graphics.getWidth() / 2 + 50, 20)
 end
 
 return score
