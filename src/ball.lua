@@ -20,7 +20,7 @@ function ball.new()
 	return self
 end
 
-function ball:update(dt, player, player2)
+function ball:update(dt, player, enemy, ai)
 	if self.y + self.size >= love.graphics.getHeight() then
 		self.vy = -self.vy
 	end
@@ -32,9 +32,25 @@ function ball:update(dt, player, player2)
 	self.y = self.y + self.vy * dt
 
 	if collision.check(self, player) then
+		self.x = player.x + player.width
 		self.vx = -self.vx
-	elseif collision.check(self, player2) then
+	elseif collision.check(self, enemy) then
+		self.x = enemy.x - self.width
 		self.vx = -self.vx
+	end
+
+	if ai == true and self.x > love.graphics.getWidth() / 2 then
+		if self.y > enemy.y + 50 then
+			enemy.y = enemy.y + enemy.speed * dt
+		end
+		if self.y < enemy.y + 50 then
+			enemy.y = enemy.y - enemy.speed * dt
+		end
+		if enemy.y <= 20 then
+			enemy.y = 20
+		elseif enemy.y >= love.graphics.getHeight() - enemy.height - 20 then
+			enemy.y = love.graphics.getHeight() - enemy.height - 20
+		end
 	end
 end
 
@@ -51,7 +67,7 @@ function ball:reset()
 	else
 		self.vx = -self.vx
 	end
-	self.vx = love.math.random(-200, 200)
+	self.vy = love.math.random(-200, 200)
 end
 
 return ball
