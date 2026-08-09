@@ -23,6 +23,11 @@ function score:update(ball)
 		self.pointsR = self.pointsR + 1
 		ball:reset()
 	end
+	if self.pointsR >= 5 then
+		love.window.close()
+	elseif self.pointsL >= 5 then
+		love.window.close()
+	end
 end
 
 function score:draw()
